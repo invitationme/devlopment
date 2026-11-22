@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>W3PRO // Test-First & Scientific Study Studio</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0d1117;
+      --bg-sidebar: #161b22;
+      --bg-card: #1c2128;
+      --bg-code: #090c10;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --w3-green: #04aa6d;
+      --w3-green-hover: #059862;
+      --accent-blue: #58a6ff;
+      --accent-warn: #d29922;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg-dark);
+      color: var(--text);
+      font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.75;
+    }
+
+    body[data-latin="true"] {
+      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .w3-topbar {
+      background: #010409;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .w3-logo {
+      background: var(--w3-green);
+      color: #fff;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    .subject-bar {
+      background: #161b22;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .subj-tab {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .subj-tab:hover { background: #21262d; }
+    .subj-tab.active { background: var(--w3-green); color: #fff; }
+
+    .w3-sidebar {
+      background: var(--bg-sidebar);
+      border-inline-end: 1px solid var(--border);
+      min-height: calc(100vh - 105px);
+    }
+
+    .lesson-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      text-align: start;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.45);
+    }
+
+    .lesson-link:hover { background: #21262d; }
+    .lesson-link.active { background: var(--w3-green); color: #fff; font-weight: 700; }
+
+    .w3-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin: 16px 0;
+    }
+
+    .w3-code-block {
+      background: var(--bg-code);
+      border-inline-start: 4px solid var(--w3-green);
+      padding: 13px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: #e6edf3;
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+
+    .btn-w3 {
+      background: var(--w3-green);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+
+    .btn-w3:hover { background: var(--w3-green-hover); color: #fff; }
+
+    .tryit-editor {
+      width: 100%;
+      height: 210px;
+      background: var(--bg-code);
+      color: #f0f6fc;
+      border: none;
+      padding: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .tryit-editor:focus { outline: none; }
+
+    .tryit-preview {
+      width: 100%;
+      height: 210px;
+      background: #ffffff;
+      color: #111;
+      border: none;
+    }
+
+    .tryit-console {
+      width: 100%;
+      height: 210px;
+      background: #010409;
+      color: #3fb950;
+      padding: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86rem;
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+
+    .w3-note {
+      background: rgba(88, 166, 255, 0.1);
+      border-inline-start: 4px solid var(--accent-blue);
+      padding: 12px 16px;
+      border-radius: 6px;
+    }
+
+    .answer-drawer {
+      background: #090c10;
+      border: 1px dashed var(--accent-warn);
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .lang-btn.active {
+      background: var(--w3-green) !important;
+      border-color: var(--w3-green) !important;
+      color: #fff !important;
+    }
+
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <header class="w3-topbar py-2 px-3">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <span class="w3-logo">W3PRO</span>
+        <span class="small muted d-none d-md-inline" id="headerSub">Test-First & Scientific Study Studio</span>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <span class="badge text-bg-dark border border-secondary px-2 py-1 mono">XP: <span id="xpVal" style="color:#3fb950;">0</span></span>
+
+        <div class="d-flex align-items-center gap-1 border border-secondary rounded px-2 py-1 small">
+          <span class="muted" id="focusLbl">Focus</span>
+          <strong class="mono" id="clockTxt">25:00</strong>
+          <button class="btn btn-sm btn-outline-light py-0 px-1" id="timerBtn">▶</button>
+        </div>
+
+        <div class="btn-group btn-group-sm">
+          <button class="btn btn-outline-secondary lang-btn active" data-lang="ar">العربية</button>
+          <button class="btn btn-outline-secondary lang-btn" data-lang="fr">FR</button>
+          <button class="btn btn-outline-secondary lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="subject-bar px-2" id="subjectBar"></nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <aside class="col-md-3 col-lg-2 p-0 w3-sidebar">
+        <div class="p-3 fw-bold small border-bottom border-secondary" id="sidebarTitle">HTML Tutorial</div>
+        <div id="lessonMenu"></div>
+      </aside>
+
+      <main class="col-md-9 col-lg-10 p-3 p-md-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+          <h3 class="fw-bold m-0" id="lessonTitle">...</h3>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-light" id="prevBtn">❮ Previous</button>
+            <button class="btn btn-sm btn-w3" id="nextBtn">Next ❯</button>
+          </div>
+        </div>
+
+        <!-- Feynman Rule + Scientific Study Tip -->
+        <div class="w3-note mb-4">
+          <div class="fw-bold small mb-1" style="color: var(--accent-blue);" id="feynmanLbl">قاعدة الفهم السريع (Feynman Rule)</div>
+          <div id="feynmanTxt"></div>
+        </div>
+
+        <!-- Usage & Rendering -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="p-3 rounded border border-secondary bg-dark h-100">
+              <div class="fw-bold small mb-1" style="color: var(--accent-blue);" id="useHeading">كيف يُستخدم</div>
+              <div class="small" id="useBody"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded border border-secondary bg-dark h-100">
+              <div class="fw-bold small mb-1" style="color: #3fb950;" id="renderHeading">كيف يظهر</div>
+              <div class="small" id="renderBody"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Example + Try It Yourself -->
+        <div class="w3-card">
+          <h5 class="fw-bold mb-2" id="exampleHeading">Example</h5>
+          <pre class="w3-code-block mb-3" id="exampleCode"></pre>
+
+          <div class="border border-secondary rounded overflow-hidden">
+            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom border-secondary bg-dark">
+              <strong class="small mono">Try it Yourself</strong>
+              <button class="btn btn-sm btn-w3" id="runTryItBtn">Run ❯</button>
+            </div>
+            <div class="row g-0">
+              <div class="col-lg-6 border-end border-secondary">
+                <textarea id="tryItEditor" class="tryit-editor" spellcheck="false"></textarea>
+              </div>
+              <div class="col-lg-6">
+                <iframe id="liveIframe" class="tryit-preview" title="Preview"></iframe>
+                <div id="liveConsole" class="tryit-console d-none"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USER-FIRST TEST (NO SOLUTION SPOILER UNTIL ATTEMPT OR EXPLICIT REQUEST) -->
+        <div class="w3-card">
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <h5 class="fw-bold m-0" style="color: var(--accent-warn);" id="testHeading">اختبار التطبيق (أجب أولاً بنفسك)</h5>
+            <span class="small muted mono" id="attemptBadge">ATTEMPTS: 0</span>
+          </div>
+
+          <p class="small mb-2" id="testPrompt"></p>
+          <textarea id="testEditor" class="w3-code-block w-100 mb-3" style="min-height: 110px; border: 1px solid var(--border);" spellcheck="false"></textarea>
+
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex gap-2">
+              <button class="btn btn-w3" id="submitTestBtn">Submit Answer</button>
+              <button class="btn btn-sm btn-outline-warning" id="revealAnswerBtn">Reveal Answer & Rule</button>
+            </div>
+            <button class="btn btn-sm btn-outline-light" id="dlSummaryBtn">⬇ Download Full Summary (.md)</button>
+          </div>
+
+          <div class="mt-2 small fw-bold" id="testFeedback"></div>
+
+          <!-- Hidden until user submits or clicks Reveal Answer -->
+          <div id="answerDrawer" class="answer-drawer d-none">
+            <div class="fw-bold small mb-1" style="color: var(--accent-warn);" id="solutionTitle">الحل وشرح القاعدة</div>
+            <pre class="w3-code-block mb-2" id="solutionCode"></pre>
+            <div class="small" id="solutionRule"></div>
+          </div>
+        </div>
+
+        <!-- Scientific Study Methods Box -->
+        <div class="w3-card">
+          <h6 class="fw-bold mb-2" id="sciTitle">تقنيات علمية للتركيز والحفظ وتسهيل الدراسة</h6>
+          <div class="row g-2 small muted" id="sciCards"></div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const COURSES = [
+      {
+        id: "html",
+        label: "HTML",
+        type: "web",
+        lessons: [
+          {
+            id: "html-1",
+            ar: {
+              menu: "1. العناوين والفقرات",
+              title: "HTML Headings & Paragraphs",
+              feynman: "الوسم يحدد وظيفة النص، والمتصفح يقرر شكله الافتراضي حسب دوره.",
+              use: "نستعمل <h1> للعنوان الرئيسي، و<p> للفقرات النصية.",
+              render: "<h1> يظهر بخط عريض كبير، و<p> يظهر تحته كفقرة مستقلة.",
+              testPrompt: "اكتب وسم <h1> بداخله كلمة Focus ووسم <p> بداخله كلمة Ready.",
+              ruleExplain: "القاعدة: كل وسم مفتوح يجب إغلاقه بنفس الاسم مع شرطة مائلة (/)"
+            },
+            fr: {
+              menu: "1. Titres & Paragraphes",
+              title: "HTML Headings & Paragraphs",
+              feynman: "La balise définit le rôle du texte ; le navigateur applique le rendu par défaut.",
+              use: "Utilise <h1> pour le titre principal et <p> pour les paragraphes.",
+              render: "<h1> s'affiche en grand et gras ; <p> s'affiche en dessous.",
+              testPrompt: "Écris une balise <h1> contenant Focus et un <p> contenant Ready.",
+              ruleExplain: "Règle : toute balise ouverte doit être fermée avec /."
+            },
+            en: {
+              menu: "1. Headings & Paragraphs",
+              title: "HTML Headings & Paragraphs",
+              feynman: "Tags define meaning; the browser renders default visual hierarchy.",
+              use: "Use <h1> for the main heading and <p> for text paragraphs.",
+              render: "<h1> renders bold and large; <p> renders below as a block.",
+              testPrompt: "Write an <h1> containing Focus and a <p> containing Ready.",
+              ruleExplain: "Rule: every opening tag needs a matching closing tag with /."
+            },
+            example: `<h1>Study Plan</h1>\n<p>25 minutes of focused coding.</p>`,
+            starter: `<h1></h1>\n<p></p>`,
+            solution: `<h1>Focus</h1>\n<p>Ready</p>`,
+            check: (c) => c.includes("<h1>Focus</h1>") && c.includes("<p>Ready</p>")
+          },
+          {
+            id: "html-2",
+            ar: {
+              menu: "2. الروابط والقوائم",
+              title: "HTML Links & Lists",
+              feynman: "خاصية href تحدد وجهة الرابط، و<ul> ينظم العناصر في قائمة.",
+              use: "نكتب <a href=\"...\"> للروابط، و<ul> مع <li> للقوائم.",
+              render: "الرابط قابل للنقر، وعناصر القائمة تظهر بنقاط متتالية.",
+              testPrompt: "اكتب رابط <a href=\"https://example.com\">Notes</a>.",
+              ruleExplain: "القاعدة: قيمة الرابط توضع داخل علامتي اقتباس بعد href=."
+            },
+            fr: {
+              menu: "2. Liens & Listes",
+              title: "HTML Links & Lists",
+              feynman: "L'attribut href donne la cible du lien ; <ul> organise une liste.",
+              use: "Utilise <a href=\"...\"> pour les liens et <ul><li> pour les listes.",
+              render: "Le lien est cliquable et la liste s'affiche avec des puces.",
+              testPrompt: "Écris un lien <a href=\"https://example.com\">Notes</a>.",
+              ruleExplain: "Règle : l'URL suit href= entre guillemets."
+            },
+            en: {
+              menu: "2. Links & Lists",
+              title: "HTML Links & Lists",
+              feynman: "href specifies the link target; <ul> groups items into a list.",
+              use: "Use <a href=\"...\"> for links and <ul> with <li> for lists.",
+              render: "Links are clickable; list items render as vertical bullets.",
+              testPrompt: "Write a link <a href=\"https://example.com\">Notes</a>.",
+              ruleExplain: "Rule: place the target URL in quotes after href=."
+            },
+            example: `<a href="https://example.com">Course Docs</a>\n<ul>\n  <li>Recall</li>\n  <li>Practice</li>\n</ul>`,
+            starter: `<a href=""></a>`,
+            solution: `<a href="https://example.com">Notes</a>`,
+            check: (c) => c.includes('href="https://example.com"') && c.includes(">Notes</a>")
+          }
+        ]
+      },
+      {
+        id: "css",
+        label: "CSS",
+        type: "web",
+        lessons: [
+          {
+            id: "css-1",
+            ar: {
+              menu: "1. Box Model",
+              title: "CSS Box Model — المسافات",
+              feynman: "padding يوسع الداخل حول النص، وmargin يبعد العنصر عما حوله.",
+              use: "نستعمل padding وmargin داخل قاعدة CSS للكلاس المطلوب.",
+              render: "تظهر مساحة داخلية مريحة حول النص وفراغ خارجي حول الصندوق.",
+              testPrompt: "أضف padding: 14px; داخل .box.",
+              ruleExplain: "القاعدة: كل خاصية في CSS تنتهي بفاصلة منقوطة (;)."
+            },
+            fr: {
+              menu: "1. Box Model",
+              title: "CSS Box Model — Espacements",
+              feynman: "padding agrandit l'intérieur ; margin espace l'élément des voisins.",
+              use: "Utilise padding et margin dans la règle de la classe.",
+              render: "Espace interne autour du contenu et marge externe visible.",
+              testPrompt: "Ajoute padding: 14px; dans .box.",
+              ruleExplain: "Règle : chaque déclaration CSS se termine par un point-virgule (;)."
+            },
+            en: {
+              menu: "1. Box Model",
+              title: "CSS Box Model — Spacing",
+              feynman: "padding expands inside space; margin creates outer space.",
+              use: "Use padding and margin properties inside your class selector.",
+              render: "Inner buffer around text and outer spacing around the box.",
+              testPrompt: "Add padding: 14px; inside .box.",
+              ruleExplain: "Rule: end each CSS property-value declaration with a semicolon (;)."
+            },
+            example: `<style>\n  .box { padding: 14px; background: #161b22; color: #fff; }\n</style>\n<div class="box">Box</div>`,
+            starter: `.box {\n  \n}`,
+            solution: `.box {\n  padding: 14px;\n}`,
+            check: (c) => c.includes(".box") && c.includes("padding: 14px")
+          }
+        ]
+      },
+      {
+        id: "bootstrap",
+        label: "BOOTSTRAP",
+        type: "web",
+        lessons: [
+          {
+            id: "bs-1",
+            ar: {
+              menu: "1. Grid System",
+              title: "Bootstrap 5 Grid",
+              feynman: "الشبكة مقسمة إلى 12 عموداً؛ col-md-6 يعني نصف العرض (6 من 12).",
+              use: "نضع .row ثم أعمدة مثل .col-md-6.",
+              render: "عمودان متساويان على الشاشات المتوسطة فأعلى.",
+              testPrompt: "اكتب <div class=\"row\"><div class=\"col-md-6\">A</div></div>.",
+              ruleExplain: "القاعدة: الأعمدة يجب أن تكون داخل عنصر يحمل class=\"row\"."
+            },
+            fr: {
+              menu: "1. Grille",
+              title: "Bootstrap 5 Grid",
+              feynman: "La grille a 12 colonnes ; col-md-6 vaut la moitié (6/12).",
+              use: "Place .row puis des colonnes comme .col-md-6.",
+              render: "Deux moitiés côte à côte dès l'écran moyen.",
+              testPrompt: "Écris <div class=\"row\"><div class=\"col-md-6\">A</div></div>.",
+              ruleExplain: "Règle : les colonnes .col-* vont dans un parent .row."
+            },
+            en: {
+              menu: "1. Grid System",
+              title: "Bootstrap 5 Grid",
+              feynman: "12-column grid; col-md-6 takes half width (6 of 12).",
+              use: "Use .row containing column classes like .col-md-6.",
+              render: "Equal half-width columns on md and larger screens.",
+              testPrompt: "Write <div class=\"row\"><div class=\"col-md-6\">A</div></div>.",
+              ruleExplain: "Rule: column classes belong inside a .row container."
+            },
+            example: `<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">\n<div class="row g-2"><div class="col-md-6 bg-success text-white p-2">A</div><div class="col-md-6 bg-dark text-white p-2">B</div></div>`,
+            starter: `<div class="">\n  <div class="">A</div>\n</div>`,
+            solution: `<div class="row">\n  <div class="col-md-6">A</div>\n</div>`,
+            check: (c) => c.includes('class="row"') && c.includes("col-md-6")
+          }
+        ]
+      },
+      {
+        id: "python",
+        label: "PYTHON",
+        type: "code",
+        lessons: [
+          {
+            id: "py-1",
+            ar: {
+              menu: "1. Functions & Return",
+              title: "Python Functions",
+              feynman: "الدالة تجمع خطوات قابلة لإعادة الاستخدام، وreturn يرجع النتيجة.",
+              use: "نعرّف بـ def ثم نستعمل return لإرجاع القيمة.",
+              render: "تُرجع الدالة القيمة الناتجة عند استدعائها.",
+              testPrompt: "عرّف دالة def double(x): ترجع x * 2.",
+              ruleExplain: "القاعدة: انتبه للمسافات البادئة (Indentation) داخل جسم الدالة."
+            },
+            fr: {
+              menu: "1. Fonctions",
+              title: "Python Functions",
+              feynman: "Une fonction regroupe une logique réutilisable ; return renvoie le résultat.",
+              use: "Définis avec def et renvoie avec return.",
+              render: "Renvoie la valeur calculée lors de l'appel.",
+              testPrompt: "Définis def double(x): retournant x * 2.",
+              ruleExplain: "Règle : l'indentation définit le bloc de la fonction."
+            },
+            en: {
+              menu: "1. Functions",
+              title: "Python Functions",
+              feynman: "Functions package reusable logic; return sends back the value.",
+              use: "Define with def and output with return.",
+              render: "Returns the computed value when called.",
+              testPrompt: "Define def double(x): returning x * 2.",
+              ruleExplain: "Rule: consistent indentation defines the function body."
+            },
+            example: `def double(x):\n    return x * 2\n\nprint(double(5))`,
+            sampleOutput: `10`,
+            starter: `def double(x):\n    pass`,
+            solution: `def double(x):\n    return x * 2`,
+            check: (c) => c.includes("def double") && c.includes("return") && c.includes("x * 2")
+          }
+        ]
+      },
+      {
+        id: "poo",
+        label: "POO",
+        type: "code",
+        lessons: [
+          {
+            id: "poo-1",
+            ar: {
+              menu: "1. Classes & __init__",
+              title: "POO — Classes & __init__",
+              feynman: "الكلاس قالب، و__init__ يهيئ خصائص كل كائن عبر self.",
+              use: "نكتب class ثم def __init__(self, ...):.",
+              render: "كل كائن يحتفظ بحالته الخاصة عبر self.",
+              testPrompt: "أنشئ class Goal: مع def __init__(self, title): وتخزين self.title = title.",
+              ruleExplain: "القاعدة: المعامل الأول في دوال الكائن غالباً يكون self."
+            },
+            fr: {
+              menu: "1. Classes & __init__",
+              title: "POO — Classes & __init__",
+              feynman: "La classe est un modèle ; __init__ initialise via self.",
+              use: "Écris class puis def __init__(self, ...):.",
+              render: "Chaque instance garde son état propre.",
+              testPrompt: "Crée class Goal: avec def __init__(self, title): et self.title = title.",
+              ruleExplain: "Règle : le premier paramètre d'une méthode d'instance est self."
+            },
+            en: {
+              menu: "1. Classes & __init__",
+              title: "POO — Classes & __init__",
+              feynman: "A class is a blueprint; __init__ sets instance state via self.",
+              use: "Define class with def __init__(self, ...):.",
+              render: "Each object stores its own attributes via self.",
+              testPrompt: "Create class Goal: with def __init__(self, title): setting self.title = title.",
+              ruleExplain: "Rule: instance methods take self as their first parameter."
+            },
+            example: `class Goal:\n    def __init__(self, title):\n        self.title = title\n\ng = Goal("Finish module")\nprint(g.title)`,
+            sampleOutput: `Finish module`,
+            starter: `class Goal:\n    def __init__(self, title):\n        pass`,
+            solution: `class Goal:\n    def __init__(self, title):\n        self.title = title`,
+            check: (c) => c.includes("class Goal") && c.includes("def __init__") && c.includes("self.title = title")
+          }
+        ]
+      }
+    ];
+
+    const UI = {
+      ar: {
+        dir: "rtl", latin: false,
+        headerSub: "اختبر نفسك أولاً + تقنيات علمية للتركيز والحفظ",
+        focusLbl: "تركيز",
+        prev: "❮ السابق", next: "التالي ❯",
+        feynmanLbl: "قاعدة الفهم السريع (Feynman Rule)",
+        useH: "كيف يُستخدم", renderH: "كيف يظهر",
+        exH: "مثال تطبيقي", run: "تشغيل ❯",
+        testH: "اختبار التطبيق (أجب أولاً بنفسك)",
+        submit: "إرسال الإجابة", reveal: "إظهار الحل والقاعدة",
+        dlMd: "⬇ تحميل ملخص الدروس (.md)",
+        solTitle: "الحل النموذجي وشرح القاعدة",
+        mustTry: "اكتب محاولتك أولاً في المربع قبل إرسال الإجابة.",
+        ok: "✔ إجابة صحيحة! حصلت على +50 XP",
+        err: "✘ ليست مطابقة بعد — راجع المطلوب أو اطلب إظهار الحل.",
+        sciTitle: "تقنيات علمية للتركيز ورفع الإنتاجية وحفظ القواعد",
+        sci: [
+          ["Active Recall", "اختبر ذاكرتك قبل النظر للحل لترسيخ المعلومة."],
+          ["Pomodoro 25m", "ركّز 25 دقيقة على مهمة واحدة لتقليل التشتت."],
+          ["Feynman 1-Line", "لخّص القاعدة بجملة بسيطة من فهمك الخاص."],
+          ["Spaced Review", "أعد اختبار نفس القاعدة بعد فترة قصيرة لتثبيتها."]
+        ]
+      },
+      fr: {
+        dir: "ltr", latin: true,
+        headerSub: "Test d'abord + Méthodes scientifiques d'étude",
+        focusLbl: "Focus",
+        prev: "❮ Précédent", next: "Suivant ❯",
+        feynmanLbl: "Règle simple (Feynman)",
+        useH: "Comment l'utiliser", renderH: "Comment ça s'affiche",
+        exH: "Exemple", run: "Exécuter ❯",
+        testH: "Test pratique (Réponds d'abord toi-même)",
+        submit: "Valider ma réponse", reveal: "Afficher solution & règle",
+        dlMd: "⬇ Télécharger le résumé (.md)",
+        solTitle: "Solution & Explication de la règle",
+        mustTry: "Écris d'abord ta tentative avant de valider.",
+        ok: "✔ Correct ! +50 XP",
+        err: "✘ Pas encore validé — réessaie ou affiche la solution.",
+        sciTitle: "Méthodes scientifiques : Focus, Productivité & Rétention",
+        sci: [
+          ["Active Recall", "Teste-toi avant de voir la réponse."],
+          ["Pomodoro 25m", "25 min sur une seule tâche sans dispersion."],
+          ["Feynman 1-Line", "Explique la règle en une phrase claire."],
+          ["Spaced Review", "Revois la règle à intervalles pour mémoriser."]
+        ]
+      },
+      en: {
+        dir: "ltr", latin: true,
+        headerSub: "Test-First + Science-Backed Focus & Retention",
+        focusLbl: "Focus",
+        prev: "❮ Previous", next: "Next ❯",
+        feynmanLbl: "Feynman One-Line Rule",
+        useH: "How It Is Used", renderH: "How It Renders",
+        exH: "Example", run: "Run ❯",
+        testH: "Practice Test (Attempt First)",
+        submit: "Submit Answer", reveal: "Reveal Answer & Rule",
+        dlMd: "⬇ Download Full Summary (.md)",
+        solTitle: "Reference Answer & Rule Breakdown",
+        mustTry: "Write your own attempt first before submitting.",
+        ok: "✔ Correct! +50 XP",
+        err: "✘ Not matching yet — try again or reveal the answer.",
+        sciTitle: "Scientific Techniques for Focus, Productivity & Retention",
+        sci: [
+          ["Active Recall", "Retrieve from memory before viewing the answer."],
+          ["Pomodoro 25m", "25-minute single-task blocks reduce mental fatigue."],
+          ["Feynman 1-Line", "State the rule plainly in your own words."],
+          ["Spaced Review", "Re-test rules later to lock long-term memory."]
+        ]
+      }
+    };
+
+    const state = {
+      lang: "ar",
+      cIdx: 0,
+      lIdx: 0,
+      xp: 0,
+      attempts: {},
+      done: {},
+      sec: 25 * 60,
+      running: false
+    };
+
+    let timerInt = null;
+    const curCourse = () => COURSES[state.cIdx];
+    const curLesson = () => curCourse().lessons[state.lIdx];
+
+    function runLive() {
+      const course = curCourse();
+      const lesson = curLesson();
+      const code = document.getElementById("tryItEditor").value;
+      const iframe = document.getElementById("liveIframe");
+      const consoleBox = document.getElementById("liveConsole");
+
+      if (course.type === "web") {
+        iframe.classList.remove("d-none");
+        consoleBox.classList.add("d-none");
+        iframe.srcdoc = code;
+      } else {
+        iframe.classList.add("d-none");
+        consoleBox.classList.remove("d-none");
+        const prints = [...code.matchAll(/print\((["'])(.*?)\1\)/g)].map(m => m[2]);
+        consoleBox.textContent = prints.length ? prints.join("\n") : (lesson.sampleOutput || ">>> Executed (0 errors)");
+      }
+    }
+
+    function applyLang() {
+      const u = UI[state.lang];
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = u.dir;
+      document.body.dataset.latin = u.latin ? "true" : "false";
+
+      document.getElementById("headerSub").textContent = u.headerSub;
+      document.getElementById("focusLbl").textContent = u.focusLbl;
+      document.getElementById("prevBtn").textContent = u.prev;
+      document.getElementById("nextBtn").textContent = u.next;
+      document.getElementById("feynmanLbl").textContent = u.feynmanLbl;
+      document.getElementById("useHeading").textContent = u.useH;
+      document.getElementById("renderHeading").textContent = u.renderH;
+      document.getElementById("exampleHeading").textContent = u.exH;
+      document.getElementById("runTryItBtn").textContent = u.run;
+      document.getElementById("testHeading").textContent = u.testH;
+      document.getElementById("submitTestBtn").textContent = u.submit;
+      document.getElementById("revealAnswerBtn").textContent = u.reveal;
+      document.getElementById("dlSummaryBtn").textContent = u.dlMd;
+      document.getElementById("solutionTitle").textContent = u.solTitle;
+      document.getElementById("sciTitle").textContent = u.sciTitle;
+
+      document.getElementById("sciCards").innerHTML = u.sci.map(([k, v]) => `
+        <div class="col-sm-6 col-lg-3">
+          <div class="p-2 rounded border border-secondary bg-dark h-100">
+            <strong class="d-block text-light">${k}</strong>
+            <span>${v}</span>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".lang-btn").forEach(b => b.classList.toggle("active", b.dataset.lang === state.lang));
+      renderAll();
+    }
+
+    function renderAll() {
+      const course = curCourse();
+      const lesson = curLesson();
+      const d = lesson[state.lang];
+
+      document.getElementById("xpVal").textContent = state.xp;
+
+      const sBar = document.getElementById("subjectBar");
+      sBar.innerHTML = "";
+      COURSES.forEach((c, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = `subj-tab ${i === state.cIdx ? "active" : ""}`;
+        b.textContent = c.label;
+        b.addEventListener("click", () => {
+          state.cIdx = i;
+          state.lIdx = 0;
+          renderAll();
+        });
+        sBar.appendChild(b);
+      });
+
+      document.getElementById("sidebarTitle").textContent = `${course.label} Tutorial`;
+      const menu = document.getElementById("lessonMenu");
+      menu.innerHTML = "";
+      course.lessons.forEach((l, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = `lesson-link ${i === state.lIdx ? "active" : ""}`;
+        b.innerHTML = `<span>${l[state.lang].menu}</span><span>${state.done[l.id] ? "✓" : ""}</span>`;
+        b.addEventListener("click", () => {
+          state.lIdx = i;
+          renderAll();
+        });
+        menu.appendChild(b);
+      });
+
+      document.getElementById("lessonTitle").textContent = d.title;
+      document.getElementById("feynmanTxt").textContent = d.feynman;
+      document.getElementById("useBody").textContent = d.use;
+      document.getElementById("renderBody").textContent = d.render;
+      document.getElementById("exampleCode").textContent = lesson.example;
+
+      document.getElementById("tryItEditor").value = lesson.example;
+      runLive();
+
+      document.getElementById("testPrompt").textContent = d.testPrompt;
+      document.getElementById("testEditor").value = lesson.starter;
+      document.getElementById("testFeedback").textContent = "";
+      document.getElementById("attemptBadge").textContent = `ATTEMPTS: ${state.attempts[lesson.id] || 0}`;
+
+      // Keep solution hidden until user clicks reveal
+      document.getElementById("answerDrawer").classList.add("d-none");
+      document.getElementById("solutionCode").textContent = lesson.solution;
+      document.getElementById("solutionRule").textContent = d.ruleExplain;
+    }
+
+    document.querySelectorAll(".lang-btn").forEach(b => {
+      b.addEventListener("click", () => {
+        state.lang = b.dataset.lang;
+        applyLang();
+      });
+    });
+
+    document.getElementById("runTryItBtn").addEventListener("click", runLive);
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      if (state.lIdx > 0) state.lIdx--;
+      else if (state.cIdx > 0) {
+        state.cIdx--;
+        state.lIdx = curCourse().lessons.length - 1;
+      }
+      renderAll();
+    });
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      if (state.lIdx < curCourse().lessons.length - 1) state.lIdx++;
+      else if (state.cIdx < COURSES.length - 1) {
+        state.cIdx++;
+        state.lIdx = 0;
+      }
+      renderAll();
+    });
+
+    document.getElementById("submitTestBtn").addEventListener("click", () => {
+      const lesson = curLesson();
+      const d = lesson[state.lang];
+      const u = UI[state.lang];
+      const val = document.getElementById("testEditor").value;
+      const fb = document.getElementById("testFeedback");
+
+      if (val.trim() === lesson.starter.trim()) {
+        fb.textContent = u.mustTry;
+        fb.style.color = "#d29922";
+        return;
+      }
+
+      state.attempts[lesson.id] = (state.attempts[lesson.id] || 0) + 1;
+      document.getElementById("attemptBadge").textContent = `ATTEMPTS: ${state.attempts[lesson.id]}`;
+
+      if (lesson.check(val)) {
+        if (!state.done[lesson.id]) {
+          state.done[lesson.id] = true;
+          state.xp += 50;
+          document.getElementById("xpVal").textContent = state.xp;
+        }
+        fb.textContent = u.ok;
+        fb.style.color = "#3fb950";
+        document.getElementById("answerDrawer").classList.remove("d-none");
+        document.getElementById("solutionCode").textContent = lesson.solution;
+        document.getElementById("solutionRule").textContent = d.ruleExplain;
+      } else {
+        fb.textContent = u.err;
+        fb.style.color = "#d29922";
+      }
+    });
+
+    document.getElementById("revealAnswerBtn").addEventListener("click", () => {
+      const lesson = curLesson();
+      const d = lesson[state.lang];
+      document.getElementById("answerDrawer").classList.remove("d-none");
+      document.getElementById("solutionCode").textContent = lesson.solution;
+      document.getElementById("solutionRule").textContent = d.ruleExplain;
+    });
+
+    document.getElementById("dlSummaryBtn").addEventListener("click", () => {
+      const lines = [`# W3PRO Study Summary (${state.lang.toUpperCase()})`];
+      COURSES.forEach(c => {
+        lines.push(`\n## ${c.label}`);
+        c.lessons.forEach(l => {
+          const d = l[state.lang];
+          lines.push(`### ${d.title}\n- Rule: ${d.feynman}\n- Usage: ${d.use}\n- Rendering: ${d.render}\n- Checkpoint Rule: ${d.ruleExplain}`);
+        });
+      });
+      const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `w3pro-study-summary-${state.lang}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("timerBtn").addEventListener("click", () => {
+      state.running = !state.running;
+      document.getElementById("timerBtn").textContent = state.running ? "❚❚" : "▶";
+      if (state.running) {
+        timerInt = setInterval(() => {
+          if (state.sec > 0) {
+            state.sec--;
+            const m = String(Math.floor(state.sec / 60)).padStart(2, "0");
+            const s = String(state.sec % 60).padStart(2, "0");
+            document.getElementById("clockTxt").textContent = `${m}:${s}`;
+          } else {
+            state.running = false;
+            clearInterval(timerInt);
+          }
+        }, 1000);
+      } else {
+        clearInterval(timerInt);
+      }
+    });
+
+    applyLang();
+  </script>
+</body>
+</html>
